@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color:#9B4191;
+}
+
+@font-face {
+  font-family: 'Bebas Regular';
+  src: url('./fonts/Yel Yeah.otf') format('truetype'); /* Adjust the path according to your project structure */
+}
+
+h1, h2, h3 {
+  font-family: 'Bebas Regular', sans-serif;
+}
