@@ -41,7 +41,7 @@ const SignIn = () => {
           <CustomButton
             onClick={() => state.auth = true}
             text={"Log In"}
-            className="bg-[#F6D31F] py-4 px-4 w-[90%] md:w-[35%] text-[#9B4191] rounded-full"
+            className="bg-[#F6D31F] py-4 px-4 w-[90%] md:w-[35%] text-[#9B4191] rounded-ful mb-10"
           />
         </motion.form>
       </motion.section>
