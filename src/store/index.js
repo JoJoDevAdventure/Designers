@@ -2,7 +2,7 @@ import { proxy } from 'valtio';
 
 const state = proxy ({
     auth: false,
-    name: "Joseph",
+    name: "",
     isOnDownload: false,
     isOnUpload: false,
     designerEmail: "",

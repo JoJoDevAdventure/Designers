@@ -8,6 +8,7 @@ import state from "../store";
 
 const SignIn = () => {
   const snap = useSnapshot(state);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -33,8 +34,9 @@ const SignIn = () => {
       return; // Stop the login process if any field is empty
     }
 
-    const user = users.find(user => user.email.toLowerCase === email.toLowerCase);
+    const user = users.find(user => user.email.toLowerCase() === email.toLowerCase());
     if (user && user.password === password) {
+      console.log(user)
       state.name = user.name;
       state.designerEmail = user.email;
       state.auth = true;
@@ -52,7 +54,7 @@ const SignIn = () => {
           Welcome to Plonkkaa
         </motion.h1>
         <motion.video {...fadeAnimation}
-        src="Plonkkaa.mp4"
+        src="./plonkkaa.mp4"
         className="w-full max-w-[90%] md:max-w-[40%] mb-10 rounded-lg border-4 border-[#F6D31F]"
         controls
       />

@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 import { useSnapshot } from "valtio";
 import {
-    headContainerAnimation,
-    headTextAnimation
+  headContainerAnimation,
+  headTextAnimation
 } from "../config/motion";
 import state from "../store";
 import Download from "./Download";
@@ -47,14 +47,14 @@ const Home = () => {
             className="text-[46px] md:text-[72px] text-[#F6D31F] text-center mb-4"
             {...headTextAnimation}
           >
-            Hello {snap.name}
+            Hello {state.name}
           </motion.h1>
           {snap.isOnDownload ? (
-            <Download />
+            <Download/>
           ) : snap.isOnUpload ? (
-            <Upload />
+            <Upload/>
           ) : (
-            <Selection />
+            <Selection/>
           )}
         </motion.section>
       )}
