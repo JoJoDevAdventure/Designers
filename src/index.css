@@ -100,3 +100,18 @@ input[type="file"] {
 h1, h2, h3 {
   font-family: 'Bebas Regular', sans-serif;
 }
+
+
+.loader {
+  border-top-color: #F6D31F;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

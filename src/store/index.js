@@ -5,7 +5,7 @@ const state = proxy ({
     name: "Joseph",
     isOnDownload: false,
     isOnUpload: false,
-
+    designerEmail: "",
 });
 
 export default state;
