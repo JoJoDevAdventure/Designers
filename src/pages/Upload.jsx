@@ -48,6 +48,7 @@ const Upload = () => {
   const [loading, setLoading] = useState(false); // State for loading screen
 
   const formRef = useRef(null);
+  const fileFormRef = useRef(null);
 
   const [formData, setFormData] = useState({
     designerName: state.name || "name",
@@ -129,13 +130,40 @@ const Upload = () => {
     }
 
     // Form is valid, proceed with the submission logic
-    formRef.current.requestSubmit();
+    fileFormRef.current.requestSubmit();
+  };
+
+  const HandleFile = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+
+    const form = e.target;
+    const fileData = new FormData(form);
+
+    try {
+      const uploadScriptURL =
+        "https://script.google.com/macros/s/AKfycbwsWFvYoLFsd49BbMcxdTey5lb2Sza0fedi1e7OZuffAW_VBW57fqgEdAhGXmvRfdTcyw/exec";
+      const uploadResponse = await fetch(uploadScriptURL, {
+        method: "POST",
+        body: fileData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(result.error || "Failed to upload file.");
+      }
+
+      console.log(uploadResponse);
+      // If upload is successful, proceed to submit additional form data
+      formRef.current.requestSubmit();
+    } catch (error) {
+      console.error("Upload file Error:", error.message);
+      setLoading(false);
+    }
   };
 
   const handleGoogle = async (e) => {
-    setLoading(true)
+    setLoading(true);
     e.preventDefault();
-
     const form = e.target;
     const formData = new FormData(form);
 
@@ -149,19 +177,17 @@ const Upload = () => {
       });
 
       if (googleResponse.ok) {
+        // fileFormRef.current.requestSubmit();
         setLoading(false); // Hide loading screen
         setUploaded(true);
         form.reset();
         setTimeout(() => {
           state.isOnUpload = false; // Reset the state after 3 seconds
         }, 5000);
-      } else {
-        throw new Error("Failed to submit to Google Sheets");
       }
     } catch (error) {
-      console.error("Error!", error.message);
-      setLoading(false); // Hide loading screen on error
-      state.isOnUpload = false; // Reset the state after 3 seconds
+      console.error("Upload data error:", error.message);
+      setLoading(false);
     }
   };
 
@@ -187,35 +213,42 @@ const Upload = () => {
               className=""
             />
             <div className="flex flex-col items-center gap-4 w-[90%] md:w-[35%]">
-              <label
-                className={`flex items-center cursor-pointer mb-4 text-[#9B4191]`}
+              <form
+                ref={fileFormRef}
+                onSubmit={HandleFile}
+                encType="multipart/form-data"
               >
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <div
-                  className={`flex items-center ${
-                    fileError ? "bg-red-500" : "bg-[#F6D31F]"
-                  } py-4 px-8 rounded-full w-full`}
+                <label
+                  className={`flex items-center cursor-pointer mb-4 text-[#9B4191]`}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6 mr-2 transform rotate-180"
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    name="fileToUpload"
+                    onChange={handleFileChange}
+                  />
+                  <div
+                    className={`flex items-center ${
+                      fileError ? "bg-red-500" : "bg-[#F6D31F]"
+                    } py-4 px-8 rounded-full w-full`}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M12 2a1 1 0 011 1v11.586l3.293-3.293a1 1 0 011.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L11 14.586V3a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <p>Click to upload your design</p>
-                </div>
-              </label>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-6 h-6 mr-2 transform rotate-180"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2a1 1 0 011 1v11.586l3.293-3.293a1 1 0 011.414 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L11 14.586V3a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <p>Click to upload your design</p>
+                  </div>
+                </label>
+              </form>
               <div className="flex flex-row justify-between items-center w-full">
                 <p className="mb-2 text-xl text-white w-[35%]">
                   Design style :
