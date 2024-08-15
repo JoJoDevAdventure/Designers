@@ -130,63 +130,43 @@ const Upload = () => {
     }
 
     // Form is valid, proceed with the submission logic
-    fileFormRef.current.requestSubmit();
-  };
-
-  const HandleFile = async (e) => {
-    setLoading(true);
-    e.preventDefault();
-
-    const form = e.target;
-    const fileData = new FormData(form);
-
-    try {
-      const uploadScriptURL =
-        "https://script.google.com/macros/s/AKfycbwsWFvYoLFsd49BbMcxdTey5lb2Sza0fedi1e7OZuffAW_VBW57fqgEdAhGXmvRfdTcyw/exec";
-      const uploadResponse = await fetch(uploadScriptURL, {
-        method: "POST",
-        body: fileData,
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error(result.error || "Failed to upload file.");
-      }
-
-      console.log(uploadResponse);
-      // If upload is successful, proceed to submit additional form data
-      formRef.current.requestSubmit();
-    } catch (error) {
-      console.error("Upload file Error:", error.message);
-      setLoading(false);
-    }
+    formRef.current.requestSubmit();
   };
 
   const handleGoogle = async (e) => {
-    setLoading(true);
     e.preventDefault();
+
     const form = e.target;
     const formData = new FormData(form);
 
+    // To log formData contents, you must iterate through its entries
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+  }
     try {
+      setLoading(true)
       // Submit to Google Sheets
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbz0CXN6Yp3FVlyVVoe6oz-yVEgKQGadVNRyGy1zva-bJi8dUjNNJOKrVOCHYvmBfI_1xQ/exec";
+        "https://script.google.com/macros/s/AKfycbypv9DPo3oGiuZQnyXm-2icHdY_KbjYZpW03v_deQ_7PJSfC_XfIsk30uVhaKAMVS4l-g/exec";
       const googleResponse = await fetch(scriptURL, {
         method: "POST",
         body: formData,
       });
 
       if (googleResponse.ok) {
-        // fileFormRef.current.requestSubmit();
         setLoading(false); // Hide loading screen
         setUploaded(true);
         form.reset();
         setTimeout(() => {
           state.isOnUpload = false; // Reset the state after 3 seconds
         }, 5000);
+      } else {
+        window.alert("Failed to submit to Google Sheets")
+        setLoading(false)
+        throw new Error("Failed to submit to Google Sheets");
       }
     } catch (error) {
-      console.error("Upload data error:", error.message);
+      console.error("Upload error:", error.message);
       setLoading(false);
     }
   };
@@ -214,8 +194,8 @@ const Upload = () => {
             />
             <div className="flex flex-col items-center gap-4 w-[90%] md:w-[35%]">
               <form
-                ref={fileFormRef}
-                onSubmit={HandleFile}
+                ref={formRef}
+                onSubmit={handleGoogle}
                 encType="multipart/form-data"
               >
                 <label
@@ -225,8 +205,8 @@ const Upload = () => {
                     type="file"
                     accept="application/pdf"
                     className="hidden"
-                    name="fileToUpload"
                     onChange={handleFileChange}
+                    name="myFile"
                   />
                   <div
                     className={`flex items-center ${
@@ -248,6 +228,9 @@ const Upload = () => {
                     <p>Click to upload your design</p>
                   </div>
                 </label>
+                {Object.keys(formData).map((key) => (
+                  <input className="hidden" key={key} name={key} value={formData[key]} readOnly />
+                ))}
               </form>
               <div className="flex flex-row justify-between items-center w-full">
                 <p className="mb-2 text-xl text-white w-[35%]">
@@ -342,17 +325,6 @@ const Upload = () => {
           </p>
         )}
       </motion.section>
-      <form
-        ref={formRef}
-        id="invisible-form"
-        className="hidden"
-        onSubmit={handleGoogle}
-      >
-        {Object.keys(formData).map((key) => (
-          <input key={key} name={key} value={formData[key]} readOnly />
-        ))}
-        <button type="submit">Submit</button>
-      </form>
       {loading && <LoadingScreen />} {/* Show loading screen */}
     </AnimatePresence>
   );
