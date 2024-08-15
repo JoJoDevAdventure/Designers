@@ -66,14 +66,65 @@ const Upload = () => {
     if (file && file.type === "application/pdf") {
       const arrayBuffer = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
-      setSelectedFile(file);
-      setFormData((prevData) => ({
-        ...prevData,
-        fileName: file.name, // Update fileName in formData
-      }));
-      setFileError(false);
+
+      const numPages = pdfDoc.getPageCount();
+
+      if (numPages > 1) {
+        console.error("The selected PDF has more than one page.");
+        alert("Please select a file conforming to bar guidelines."); // Show the alert message
+        // Reset file input
+        event.target.value = null;
+        setSelectedFile(null);
+        setFormData((prevData) => ({
+          ...prevData,
+          fileName: "",
+        }));
+        setFileError(true);
+      } else {
+        // Check the dimensions and resolution of the single page
+        const page = pdfDoc.getPage(0);
+        const { width, height } = page.getSize();
+
+        // Convert PDF points to pixels (1 point = 1/72 inches)
+        const widthInPixels = (width * 300) / 72;
+        const heightInPixels = (height * 300) / 72;
+
+        // Add ±2 pixel margin
+        const widthIsValid = widthInPixels >= 2337 && widthInPixels <= 2341;
+        const heightIsValid = heightInPixels >= 2242 && heightInPixels <= 2246;
+
+        if (!widthIsValid || !heightIsValid) {
+          console.error(
+            "The selected PDF does not meet the required resolution."
+          );
+          alert(
+            "The selected PDF does not meet the required resolution. Please select a file conforming to bar guidelines."
+          ); // Show the alert message
+          // Reset file input
+          event.target.value = null;
+          setSelectedFile(null);
+          setFormData((prevData) => ({
+            ...prevData,
+            fileName: "",
+          }));
+          setFileError(true);
+        } else {
+          // Continue processing if it's a single-page PDF with the correct resolution
+          setSelectedFile(file);
+          setFormData((prevData) => ({
+            ...prevData,
+            fileName: file.name, // Update fileName in formData
+          }));
+          setFileError(false);
+
+          console.log(
+            `Page 1: Width = ${widthInPixels}px, Height = ${heightInPixels}px`
+          );
+        }
+      }
     } else {
       setFileError(true);
+      alert("Please select a file conforming to bar guidelines."); // Show the alert message for non-PDF files
     }
   };
 
@@ -139,36 +190,42 @@ const Upload = () => {
     const form = e.target;
     const formData = new FormData(form);
 
-    // To log formData contents, you must iterate through its entries
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-  }
-    try {
-      setLoading(true)
-      // Submit to Google Sheets
-      const scriptURL =
-        "https://script.google.com/macros/s/AKfycbypv9DPo3oGiuZQnyXm-2icHdY_KbjYZpW03v_deQ_7PJSfC_XfIsk30uVhaKAMVS4l-g/exec";
-      const googleResponse = await fetch(scriptURL, {
-        method: "POST",
-        body: formData,
-      });
+    // Convert the file to a base64 string
+    const file = selectedFile;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-      if (googleResponse.ok) {
-        setLoading(false); // Hide loading screen
-        setUploaded(true);
-        form.reset();
-        setTimeout(() => {
-          state.isOnUpload = false; // Reset the state after 3 seconds
-        }, 5000);
-      } else {
-        window.alert("Failed to submit to Google Sheets")
-        setLoading(false)
-        throw new Error("Failed to submit to Google Sheets");
+    reader.onloadend = async function () {
+      const base64data = reader.result;
+      formData.append("myFile", base64data); // Append base64 encoded file
+
+      try {
+        setLoading(true);
+        // Submit to Google Sheets
+        const scriptURL =
+          "https://script.google.com/macros/s/AKfycbzEhEnOGlRkUG8EbQKH0WXIqceoHxdqLD6EfrATID8j3QEjw0aJU2pLW9x3Ydl1htuX5Q/exec";
+        const googleResponse = await fetch(scriptURL, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (googleResponse.ok) {
+          setLoading(false); // Hide loading screen
+          setUploaded(true);
+          form.reset();
+          setTimeout(() => {
+            state.isOnUpload = false; // Reset the state after 3 seconds
+          }, 5000);
+        } else {
+          window.alert("Failed to submit to Google Sheets");
+          setLoading(false);
+          throw new Error("Failed to submit to Google Sheets");
+        }
+      } catch (error) {
+        console.error("Upload error:", error.message);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Upload error:", error.message);
-      setLoading(false);
-    }
+    };
   };
 
   return (
@@ -204,9 +261,8 @@ const Upload = () => {
                   <input
                     type="file"
                     accept="application/pdf"
-                    className="hidden"
+                    className=""
                     onChange={handleFileChange}
-                    name="myFile"
                   />
                   <div
                     className={`flex items-center ${
@@ -229,7 +285,13 @@ const Upload = () => {
                   </div>
                 </label>
                 {Object.keys(formData).map((key) => (
-                  <input className="hidden" key={key} name={key} value={formData[key]} readOnly />
+                  <input
+                    className="hidden"
+                    key={key}
+                    name={key}
+                    value={formData[key]}
+                    readOnly
+                  />
                 ))}
               </form>
               <div className="flex flex-row justify-between items-center w-full">
