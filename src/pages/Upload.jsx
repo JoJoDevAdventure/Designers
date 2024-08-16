@@ -353,7 +353,7 @@ const Upload = () => {
                 <input
                   type="text"
                   className={`p-4 border ${
-                    titleError ? "border-red-500" : "border-[#F6D31F]"
+                    titleError ? "border-red-500" :"border-[#F6D31F]"
                   } bg-transparent rounded-full text-white placeholder-white w-full mb-4`}
                   placeholder="Title"
                   value={title}
