@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import React from "react";
+import React, { useState } from "react";
 import { useSnapshot } from "valtio";
 import { headTextAnimation, slideAnimation } from "../config/motion";
 import state from "../store";
 
 const Selection = () => {
   const snap = useSnapshot(state);
+  const [showTerms, setShowTerms] = useState(false); // State to manage the visibility of the Terms and Conditions
 
   const alertAnimation = {
     initial: { y: 0 },
@@ -28,11 +29,14 @@ const Selection = () => {
         Welcome to Plonkkaa's designer space
       </motion.p>
 
-      <motion.div className="flex flex-row md:gap-8 gap-2 mb-8 h-64 md:h-full mx-8 md:mx-auto" {...headTextAnimation}>
+      <motion.div
+        className="flex flex-row md:gap-8 gap-2 mb-8 h-64 md:h-full mx-8 md:mx-auto"
+        {...headTextAnimation}
+      >
         <motion.div
           className="border-4 border-[#F6D31F] md:px-8 md:py-16 p-4 rounded-3xl cursor-pointer flex flex-col items-center gap-8 md:min-w-96 min-h-24 group bg-transparent hover:bg-[#F6D31F] w-full"
           {...slideAnimation("left")}
-          onClick={()=>state.isOnDownload = true}
+          onClick={() => (state.isOnDownload = true)}
         >
           <svg
             width="183"
@@ -56,7 +60,7 @@ const Selection = () => {
         <motion.div
           className="border-4 border-[#F6D31F] md:px-8 md:py-16 p-4 rounded-3xl cursor-pointer flex flex-col items-center gap-8 md:min-w-96 min-h-24 group bg-transparent hover:bg-[#F6D31F] w-full"
           {...slideAnimation("right")}
-          onClick={()=>state.isOnUpload = true}
+          onClick={() => (state.isOnUpload = true)}
         >
           <svg
             width="183"
@@ -99,9 +103,110 @@ const Selection = () => {
           </svg>
         </motion.div>
         <p className="text-[#F6D31F] text-xl">
-          Please submit your designs by August 18th.
+          Please submit your designs by August 30th.
         </p>
       </div>
+      <div className="flex flex-row items-center mt-16  w-full justify-between md:px-64 px-8 ">
+        <button
+          className="bg-[#F6D31F] text-[#9B4191] py-2 px-4 rounded hover:bg-[#9B4191] hover:text-[#F6D31F]"
+          onClick={() => setShowTerms(true)}
+        >
+          Terms and Conditions
+        </button>
+        <button
+          className="bg-[#F6D31F] text-[#9B4191] py-2 px-4 rounded hover:bg-[#9B4191] hover:text-[#F6D31F]"
+          onClick={() => (window.location = "mailto:team@plonkkaa.com")}
+        >
+          Contact Us
+        </button>
+      </div>
+
+      {showTerms && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg w-11/12 md:w-3/5 max-w-4xl text-black overflow-y-auto max-h-[90vh]">
+            <p className="text-3xl font-bold mb-4">
+              Terms and Conditions for PLONKKAA Designers
+            </p>
+            <p>
+              <strong>Introduction</strong>
+              <br />
+              Welcome to PLONKKAA! These Terms and Conditions ("Terms") govern
+              your use of our platform and services as a designer. By
+              registering and uploading your designs, you agree to comply with
+              and be bound by these Terms.
+            </p>
+            <p>
+              <strong>Commission and Payment</strong>
+              <br />
+              Commission Rate: Designers will earn a commission of 10% on the
+              sale price of each product sold featuring their design.
+              <br />
+              Payment Schedule: Commissions are calculated monthly and paid out
+              on the 2nd of each month directly to your PayPal account.
+              <br />
+              Minimum Payout: If your earnings do not reach a minimum threshold
+              of £10, your earnings will be carried over to the next month until
+              the threshold is met.
+            </p>
+            <p>
+              <strong>Copyright and Licensing</strong>
+              <br />
+              Ownership: Designers retain full ownership and copyright of their
+              work.
+              <br />
+              Licensing: By uploading your designs to PLONKKAA, you grant us a
+              non-exclusive license to use, reproduce, and sell your designs on
+              various products. This license is limited to the purpose of
+              selling your designs on our platform.
+            </p>
+            <p>
+              <strong>Account Setup and Usage</strong>
+              <br />
+              Registration: To become a designer on PLONKKAA, you must create an
+              account and provide your name, address, email, and other necessary
+              details.
+              <br />
+              Design Uploads: You can upload up to 10 designs. Designs can be
+              uploaded gradually over time or all at once. More designs can be
+              uploaded if another agreement is in place.
+              <br />
+              Design Requirements: Designs must meet our specified format and
+              quality standards, including resolution and color profile
+              specifications.
+            </p>
+            <p>
+              <strong>Termination</strong>
+              <br />
+              Termination by You: You may terminate your account at any time by
+              providing us with written notice. Termination will not affect any
+              accrued rights and obligations.
+              <br />
+              Termination by Us: We may terminate your account if you breach
+              these Terms or if we decide to discontinue the service. In such
+              cases, we will provide you with notice and pay out any outstanding
+              commissions.
+            </p>
+            <p>
+              <strong>Miscellaneous</strong>
+              <br />
+              Changes to Terms: We may update these Terms from time to time. We
+              will notify you of any significant changes.
+            </p>
+            <p>
+              <strong>Contact Us</strong>
+              <br />
+              For any questions or concerns regarding these Terms, please
+              contact us at team@plonkkaa.com.
+            </p>
+            <button
+              className="mt-4 bg-[#F6D31F] text-black py-2 px-4 rounded hover:bg-[#9B4191]"
+              onClick={() => setShowTerms(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
