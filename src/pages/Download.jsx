@@ -7,7 +7,7 @@ import state from "../store";
 const softwareImages = {
   Photoshop: "./ps.png", // Update these paths with your actual image paths
   Illustrator: "./illu.png",
-  InDesign: "./ind.png",
+  InDesign: "./procreate.png",
   Sketch: "./canva.png",
   Figma: "./express.png",
   Other: "./other.png",
@@ -19,7 +19,7 @@ const Download = () => {
   const handleSoftwareClick = (software) => {
     setDownloadStarted(true);
     // Replace '/path/to/file' with the actual path of the file to download
-    const filePath = `/path/to/${software.toLowerCase()}-template.zip`;
+    const filePath = `./${software.toLowerCase()}-template.zip`;
     const link = document.createElement("a");
     link.href = filePath;
     link.download = `${software}-template.zip`;
@@ -40,13 +40,13 @@ const Download = () => {
       >
         {!downloadStarted ? (
           <>
-          <CustomBackButton onClick={() => state.isOnDownload = false}/>
-      <motion.p
-        className="px-8 md:px-64 mb-10 text-white text-xl md:text-3xl text-center"
-        {...headTextAnimation}
-      >
-        Please select your software
-      </motion.p>
+            <CustomBackButton onClick={() => (state.isOnDownload = false)} />
+            <motion.p
+              className="px-8 md:px-64 mb-10 text-white text-xl md:text-3xl text-center"
+              {...headTextAnimation}
+            >
+              Please select your software
+            </motion.p>
             <div className="flex flex-wrap justify-center gap-12 items-center mb-4 w-[80%] md:w-[60%]">
               <div
                 onClick={() => handleSoftwareClick("Photoshop")}
@@ -69,7 +69,7 @@ const Download = () => {
                 />
               </div>
               <div
-                onClick={() => handleSoftwareClick("InDesign")}
+                onClick={() => handleSoftwareClick("Procreate")}
                 className="h-[130px] w-[130px] md:h-[200px] md:w-[200px] border border-[#F6D31F] rounded-3xl cursor-pointer flex justify-center items-center bg-transparent transition-all duration-500 hover:bg-[#F6D31F] group"
               >
                 <img
@@ -78,8 +78,10 @@ const Download = () => {
                   className="w-[100px] md:w-[160px] transition-all duration-500 group-hover:scale-[105%]"
                 />
               </div>
-              <div
-                onClick={() => handleSoftwareClick("Canva")}
+              <a
+                href=
+                  "https://www.canva.com/design/DAGOfbyg2to/3Fe0hmsuBcwyBbNELDqlcw/view?utm_content=DAGOfbyg2to&utm_campaign=designshare&utm_medium=link&utm_source=publishsharelink&mode=preview"
+                
                 className="h-[130px] w-[130px] md:h-[200px] md:w-[200px] border border-[#F6D31F] rounded-3xl cursor-pointer flex justify-center items-center bg-transparent transition-all duration-500 hover:bg-[#F6D31F] group"
               >
                 <img
@@ -87,7 +89,7 @@ const Download = () => {
                   alt="Canva"
                   className="w-[100px] md:w-[160px] transition-all duration-500 group-hover:scale-[105%]"
                 />
-              </div>
+              </a>
               <div
                 onClick={() => handleSoftwareClick("Express")}
                 className="h-[130px] w-[130px] md:h-[200px] md:w-[200px] border border-[#F6D31F] rounded-3xl cursor-pointer flex justify-center items-center bg-transparent transition-all duration-500 hover:bg-[#F6D31F] group"
