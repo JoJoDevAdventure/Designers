@@ -98,5 +98,30 @@
         "name": "Emma",
         "email": "peartreepessuk@gmail.com",
         "password": "Plonkkaa15"
+    },
+    {
+        "name": "Klara Hawkins",
+        "email": "hello@klarahawkins.com",
+        "password": "Plonkkaa16"
+    },
+    {
+        "name": "Sarah",
+        "email": "sarah@sazerelli.com",
+        "password": "Plonkkaa17"
+    },
+    {
+        "name": "Joanne Hawker",
+        "email": "hello@joannehawker.co.uk",
+        "password": "Plonkkaa18"
+    },
+    {
+        "name": "Emily Swallow",
+        "email": "emilyswallow8@gmail.com",
+        "password": "Plonkkaa19"
+    },
+    {
+        "name": "Rachel Manzano",
+        "email": "rachelmanzano89@icloud.com",
+        "password": "Plonkkaa20"
     }
 ]
